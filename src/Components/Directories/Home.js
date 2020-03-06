@@ -14,6 +14,8 @@ import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import { red } from '@material-ui/core/colors';
+import ChipInput from 'material-ui-chip-input'
+import Button from '@material-ui/core/Button';
 
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -28,11 +30,15 @@ const styles = theme => ({
         marginBottom: theme.spacing.unit * 2,
         paddingBottom: theme.spacing.unit * 2,
     },
-    iconButton: {
-    },
     formControl: {
         margin: theme.spacing(1),
         minWidth: 150,
+    },
+    details: {
+        flexDirection: "column"
+    },
+    input: {
+        display: 'none',
     },
 })
 class Home extends Component {
@@ -51,119 +57,157 @@ class Home extends Component {
                 <Fab color="primary" aria-label="add">
                     <AddIcon />
                 </Fab>
+                {/* <Paper className={classes.paper} elevation={1}> */}
+
+
+                <ExpansionPanel square={false}>
+                    <ExpansionPanelSummary
+                        expandIcon={<ExpandMoreIcon />}
+                        aria-label="Expand"
+                        aria-controls="additional-actions1-content"
+                        id="additional-actions1-header"
+                    >
+
+                        <IconButton
+                            aria-label="Usuń zadanie" className={classes.iconButton}
+                            onClick={event => event.stopPropagation()}
+                            onFocus={event => event.stopPropagation()}>
+                            <DeleteIcon style={{
+                                color: red[500]
+                            }} />
+                        </IconButton>
+
+                        <FormControlLabel
+                            className={classes.iconButton}
+                            aria-label="Acknowledge"
+                            onClick={event => event.stopPropagation()}
+                            onFocus={event => event.stopPropagation()}
+                            control={<Checkbox />}
+                            label="I acknowledge that I should stop the click event propagation"
+                        />
+
+                    </ExpansionPanelSummary>
+                    <ExpansionPanelDetails className={classes.details}>
+                        "czyWymagane"
+                            <FormControl variant="outlined" className={classes.formControl}>
+                            <InputLabel ref={"inputLabel"} id="czyWymagane">
+                                czyWymagane
+                            </InputLabel>
+                            <Select
+                                required
+                                labelId="czyWymagane"
+                                id="demo-simple-select-outlined"
+                                value={true}
+                            // onChange={handleChange}
+                            // labelWidth={labelWidth}
+                            >
+                                <MenuItem value={true}>Tak</MenuItem>
+                                <MenuItem value={false}>Nie</MenuItem>
+                            </Select>
+                        </FormControl>
+                        <br />
+                        "dobreOdpowiedzi"<br />
+                        <ChipInput
+                            id="dobreOdpowiedzi"
+                            // value={0.5}
+                            variant="outlined"
+                            label="dobreOdpowiedzi"
+                            style={{ margin: 8 }}
+                            type="number"
+                            variant="outlined"
+                            required
+                            defaultValue={['foo', 'bar']}
+                        />
+
+                        "lokalizacjaDl"<br />
+                        <TextField
+                            id="lokalizacjaDl"
+                            // value={0.5}
+                            variant="outlined"
+                            label="lokalizacjaDl"
+                            style={{ margin: 8 }}
+                            type="number"
+                            required
+                            margin="normal"
+                        />
+                        "lokalizacjaSzer"<br />
+                        <TextField
+                            id="lokalizacjaSzer"
+                            // value={"123123"}
+                            variant="outlined"
+                            label="lokalizacjaSzer"
+                            style={{ margin: 8 }}
+                            type="number"
+                            required
+                            margin="normal"
+                        />
+                        "podpisObrazka"<br />
+                        <TextField
+                            id="podpisObrazka"
+                            // value={"podpisObrazka"}
+                            variant="outlined"
+                            label="podpisObrazka"
+                            style={{ margin: 8 }}
+                            margin="normal"
+                        />
+
+                        "podtytul"<br />
+                        <TextField
+                            id="podtytul"
+                            // value={"podtytul"}
+                            variant="outlined"
+                            label="podtytul"
+                            style={{ margin: 8 }}
+                            margin="normal"
+                        />
+                        "trescZadania"<br />
+                        <TextField
+                            id="trescZadania"
+                            // value={"trescZadania"}
+                            variant="outlined"
+                            label="trescZadania"
+                            required
+                            style={{ margin: 8 }}
+                            margin="normal"
+                        />
+                        "tytul"
+                            <TextField
+                            id="tytul"
+                            // value={["rozbiory", "twoja stara", "cos"]}
+                            variant="outlined"
+                            label="tytul"
+                            required
+                            style={{ margin: 8 }}
+                            margin="normal"
+                        />
+                        "urlZdjeciaDoZadania"
+                            <input
+                            accept="image/*"
+                            className={classes.input}
+                            id="outlined-button-file"
+                            type="file"
+                        />
+                        <label htmlFor="outlined-button-file">
+                            <Button
+                                variant="outlined"
+                                component="span"
+                                style={{ margin: 8 }}
+                            >
+                                WYBIERZ ZDJĘCIE DO ZADANIA
+                            </Button>
+                        </label>
+                        <img src="https://firebasestorage.googleapis.com/v0/b/gterenowa.appspot.com/o/1.jpg?alt=media&token=022113f9-9284-4c80-94a4-fc3819993d96"
+                            width="15%" height="15%" />
+
+                    </ExpansionPanelDetails>
+                </ExpansionPanel>
+
+                {/* </Paper> */}
                 <Paper className={classes.paper} elevation={1}>
                     <Typography variant="h5" component="h3">
-                        Zaznacz wszystkie dni wolne od szkoły, oprocz weekendow
+                        Second one
                     </Typography>
 
-                    <ExpansionPanel>
-                        <ExpansionPanelSummary
-                            expandIcon={<ExpandMoreIcon />}
-                            aria-label="Expand"
-                            aria-controls="additional-actions1-content"
-                            id="additional-actions1-header"
-                        >
-
-                            <IconButton
-                                aria-label="Usuń zadanie" className={classes.iconButton}
-                                onClick={event => event.stopPropagation()}
-                                onFocus={event => event.stopPropagation()}>
-                                <DeleteIcon style={{
-                                    color: red[500]
-                                }} />
-                            </IconButton>
-
-                            <FormControlLabel
-                                className={classes.iconButton}
-                                aria-label="Acknowledge"
-                                onClick={event => event.stopPropagation()}
-                                onFocus={event => event.stopPropagation()}
-                                control={<Checkbox />}
-                                label="I acknowledge that I should stop the click event propagation"
-                            />
-
-                        </ExpansionPanelSummary>
-                        <ExpansionPanelDetails>
-                            <img src="https://firebasestorage.googleapis.com/v0/b/gterenowa.appspot.com/o/1.jpg?alt=media&token=022113f9-9284-4c80-94a4-fc3819993d96"
-                                width="15%" height="15%" />
-                            {/* <div style={{ clear: "both" }} /> */}
-
-                            "czyWymagane"
-                            <FormControl variant="outlined" className={classes.formControl}>
-                                <InputLabel ref={"inputLabel"} id="demo-simple-select-outlined-label">
-                                    czyWymagane
-                            </InputLabel>
-                                <Select
-                                    labelId="demo-simple-select-outlined-label"
-                                    id="demo-simple-select-outlined"
-                                    value={true}
-                                // onChange={handleChange}
-                                // labelWidth={labelWidth}
-                                >
-                                    <MenuItem value={true}>Tak</MenuItem>
-                                    <MenuItem value={false}>Nie</MenuItem>
-                                </Select>
-                            </FormControl>
-                            <br />
-                            "dobreOdpowiedzi"<br />
-                            "lokalizacjaDl"<br />
-                            "lokalizacjaSzer"<br />
-                            "podpisObrazka"<br />
-                            "podtytul"<br />
-                            "trescZadania"<br />
-
-                            "tytul"
-                            <TextField
-                                id="standard-full-width"
-                                value={"rozbiory"}
-                                variant="outlined"
-                                label="tytul"
-                                style={{ margin: 8 }}
-                                placeholder="tytul"
-                                helperText="Powyższe dni zostaną wysłane do bazy danych!"
-                                // fullWidth
-                                margin="normal"
-                                InputLabelProps={{
-                                    shrink: true,
-                                }}
-                            /><br />
-                            "urlZdjeciaDoZadania"
-                            <Typography color="textSecondary">
-                                The click event of the nested action will propagate up and expand the panel unless you
-                                explicitly stop it.
-                     </Typography>
-                        </ExpansionPanelDetails>
-                    </ExpansionPanel>
-
-
-                    {/* <Typography component="p">
-                        Program będzie losował szczęśliwe numerki w dni od poniedziałku do piątku, w dni szkolne.
-                        Cel zaznaczenia dni wolnych od nauki jest taki, że program będzie wiedział w które dni
-                        powstrzymac się od losowania.
-                        Przykładowa strona, ktora wyświetla dni wolne od nauki szkolnej:
-                <a href="https://www.kalendarzswiat.pl/kalendarz_szkolny">klik</a>
-                        . Do informacji z niej trzeba dodac szkolne, indywidualne dni wolne(egzaminy zawodowe, święta,
-                        ferie, itd..)
-          </Typography> */}
-
-                    <TextField
-                        id="standard-full-width"
-                        value={this.state.selectedDays ? this.state.selectedDays.map(item => {
-                            return (
-                                item.toLocaleDateString()
-                            )
-                        }) : "Wybierz jakieś dni"}
-
-                        label="Zaznaczone dni"
-                        style={{ margin: 8 }}
-                        placeholder="<--! Tekst wprowadzany automatycznie !-->"
-                        helperText="Powyższe dni zostaną wysłane do bazy danych!"
-                        fullWidth
-                        margin="normal"
-                        InputLabelProps={{
-                            shrink: true,
-                        }}
-                    />
                 </Paper>
                 <Paper className={classes.paper} elevation={1}>
                     <Typography variant="h5" component="h3">
@@ -171,7 +215,54 @@ class Home extends Component {
                     </Typography>
 
                 </Paper>
+                <Paper className={classes.paper} elevation={1}>
+                    <Typography variant="h5" component="h3">
+                        Second one
+                    </Typography>
 
+                </Paper>
+                <Paper className={classes.paper} elevation={1}>
+                    <Typography variant="h5" component="h3">
+                        Second one
+                    </Typography>
+
+                </Paper>
+                <Paper className={classes.paper} elevation={1}>
+                    <Typography variant="h5" component="h3">
+                        Second one
+                    </Typography>
+
+                </Paper>
+                <Paper className={classes.paper} elevation={1}>
+                    <Typography variant="h5" component="h3">
+                        Second one
+                    </Typography>
+
+                </Paper>
+                <Paper className={classes.paper} elevation={1}>
+                    <Typography variant="h5" component="h3">
+                        Second one
+                    </Typography>
+
+                </Paper>
+                <Paper className={classes.paper} elevation={1}>
+                    <Typography variant="h5" component="h3">
+                        Second one
+                    </Typography>
+
+                </Paper>
+                <Paper className={classes.paper} elevation={1}>
+                    <Typography variant="h5" component="h3">
+                        Second one
+                    </Typography>
+
+                </Paper>
+                <Paper className={classes.paper} elevation={1}>
+                    <Typography variant="h5" component="h3">
+                        Second one
+                    </Typography>
+
+                </Paper>
             </div>
         );
     }
