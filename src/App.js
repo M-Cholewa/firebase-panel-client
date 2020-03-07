@@ -37,14 +37,15 @@ const styles = {
   section: {
     backgroundImage: `url(${background})`,
     // backgroundRepeat: "no-repeat",
-    // height: "100vh",
-    // width: "100%",
+    minHeight: "100vh",
+    height: "100%",
+    width: "100%",
     // position: "absolute",
 
 
-    // backgroundAttachment: "fixed",
-    // backgroundPosition: "center",
-    // backgroundRepeat: "repeat-y",
+    backgroundAttachment: "fixed",
+    backgroundPosition: "center",
+    backgroundRepeat: "no-repeat",
     backgroundSize: "cover",
 
     fontFamily: "sans-serif"

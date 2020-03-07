@@ -8,6 +8,10 @@ class AxiosCalls {
         return Axios.post('http://localhost:8080/checkLogged')
     }
 
+    // getDB = () => {
+    //     return Axios.post('http://localhost:8080/getDB')
+    // }
+
     authorize = (email, password) => {
         return new Promise((resolve, reject) => {
             firebase.auth().signInWithEmailAndPassword(email, password)

@@ -31,7 +31,6 @@ class ProtectedRoute extends Component {
         if (!isAuthenticated && responseObtained) {
             return <Redirect to="/login" />
         } else if (isAuthenticated && responseObtained) {
-            console.log("isAuthenticated && responseObtained")
             return <Route {...rest} render={() => (<Component {...this.props} />)} />
         } else {
             return (<div>please wait... Loading</div>)
