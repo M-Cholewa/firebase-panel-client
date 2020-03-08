@@ -1,29 +1,18 @@
 import React, { Component } from 'react'
 import ReactDOM from "react-dom";
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
-import InputLabel from '@material-ui/core/InputLabel';
-import Paper from '@material-ui/core/Paper'
+import { Select, MenuItem, FormControl, InputLabel, Paper, Button, TextField, CircularProgress } from '@material-ui/core';
+import { ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails, FormControlLabel, IconButton } from '@material-ui/core';
 import ChipInput from 'material-ui-chip-input'
-import Button from '@material-ui/core/Button';
-import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { red } from '@material-ui/core/colors';
-import TextField from '@material-ui/core/TextField';
 import { withStyles } from '@material-ui/core/styles'
+import Axios from "axios";
+
 
 const styles = theme => ({
     paper: {
-        // ...theme.mixins.gutters(),
-        // paddingTop: theme.spacing.unit * 2,
         marginBottom: theme.spacing.unit * 2,
-        // paddingBottom: theme.spacing.unit * 2,
     },
     formControl: {
         margin: theme.spacing(1),
@@ -36,7 +25,10 @@ const styles = theme => ({
         display: 'none',
     },
     formControlLabel: {
-        marginLeft: 10
+        marginLeft: 20
+    },
+    saveBtn: {
+        marginTop: 5,
     }
 })
 
@@ -44,7 +36,52 @@ class MyForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            labelWidth: 0
+            labelWidth: 0,
+            loading: false,
+            // success: false,
+            // image: '',
+            buttonMessage: 'Zapisz',
+        }
+    }
+
+    handleImageChange = event => {
+        // console.log(document.getElementById("outlined-button-file" + this.props.id).value)
+        // console.log(event.target.files)
+        // console.log(event.target.files[0])
+        let files = event.target.files;
+        if (FileReader && files && files.length) {
+            var fr = new FileReader();
+            fr.onload = () => {
+                // this.setState({
+                //     image: fr.result
+                // })
+                document.getElementById("imgSpotlight" + this.props.id).src = fr.result;
+            }
+            fr.readAsDataURL(files[0]);
+        }
+        // console.log(this.state.image)
+        console.log(document.getElementById("outlined-button-file" + this.props.id).files[0])
+        // console.log(event.target.files[0])
+
+        // this.setState({
+        //     image: event.target.files[0]
+        // })
+    }
+
+    handleButtonClick = () => {
+        if (!this.state.loading) {
+            this.setState({
+                // success: false,
+                loading: true,
+                buttonMessage: 'Czekaj..',
+            })
+            setTimeout(() => {
+                this.setState({
+                    // success: true,
+                    loading: false,
+                    buttonMessage: 'Zapisano'
+                })
+            }, 3000)
         }
     }
 
@@ -55,14 +92,16 @@ class MyForm extends Component {
     }
 
     render() {
+        const { loading } = this.state
         const { formValues, id, classes } = this.props
+
         return (<Paper className={classes.paper} elevation={1}>
             <ExpansionPanel square={false}>
                 <ExpansionPanelSummary
                     expandIcon={<ExpandMoreIcon />}
                     aria-label="Expand"
                     aria-controls="additional-actions1-content"
-                    id="additional-actions1-header"
+                    id={"additional-actions1-header" + id}
                 >
 
                     <IconButton
@@ -88,13 +127,13 @@ class MyForm extends Component {
                         <InputLabel ref={ref => {
                             this.InputLabelRef = ref;
                         }}
-                            id="czyWymagane">
+                            id={"czyWymagane" + id}>
                             czyWymagane
                     </InputLabel>
                         <Select
                             required
                             labelId="czyWymagane"
-                            id="demo-simple-select-outlined"
+                            id={"demo-simple-select-outlined" + id}
                             labelWidth={this.state.labelWidth}
                             defaultValue={formValues.czyWymagane}
                         >
@@ -105,7 +144,7 @@ class MyForm extends Component {
                     <br />
                     "dobreOdpowiedzi"<br />
                     <ChipInput
-                        id="dobreOdpowiedzi"
+                        id={"dobreOdpowiedzi" + id}
                         defaultValue={formValues.dobreOdpowiedzi}
                         // defaultValue={formValues.dobreOdpowiedzi}
                         variant="outlined"
@@ -117,7 +156,7 @@ class MyForm extends Component {
 
                     "lokalizacjaDl"<br />
                     <TextField
-                        id="lokalizacjaDl"
+                        id={"lokalizacjaDl" + id}
                         defaultValue={formValues.lokalizacjaDl}
                         inputProps={{
                             step: "0.01",
@@ -132,7 +171,7 @@ class MyForm extends Component {
                     />
                     "lokalizacjaSzer"<br />
                     <TextField
-                        id="lokalizacjaSzer"
+                        id={"lokalizacjaSzer" + id}
                         defaultValue={formValues.lokalizacjaSzer}
                         variant="outlined"
                         label="lokalizacjaSzer"
@@ -143,7 +182,7 @@ class MyForm extends Component {
                     />
                     "podpisObrazka"<br />
                     <TextField
-                        id="podpisObrazka"
+                        id={"podpisObrazka" + id}
                         defaultValue={formValues.podpisObrazka}
                         variant="outlined"
                         label="podpisObrazka"
@@ -153,7 +192,7 @@ class MyForm extends Component {
 
                     "podtytul"<br />
                     <TextField
-                        id="podtytul"
+                        id={"podtytul" + id}
                         defaultValue={formValues.podtytul}
                         variant="outlined"
                         label="podtytul"
@@ -162,7 +201,7 @@ class MyForm extends Component {
                     />
                     "trescZadania"<br />
                     <TextField
-                        id="trescZadania"
+                        id={"trescZadania" + id}
                         defaultValue={formValues.trescZadania}
                         variant="outlined"
                         label="trescZadania"
@@ -172,7 +211,7 @@ class MyForm extends Component {
                     />
                     "tytul"
                     <TextField
-                        id="tytul"
+                        id={"tytul" + id}
                         defaultValue={formValues.tytul}
                         variant="outlined"
                         label="tytul"
@@ -182,7 +221,7 @@ class MyForm extends Component {
                     />
                     "urlZdjeciaDoZadania"
 
-                <label htmlFor="outlined-button-file">
+                <label htmlFor={"outlined-button-file" + id}>
                         <Button
                             variant="outlined"
                             component="span"
@@ -191,15 +230,29 @@ class MyForm extends Component {
                             <input
                                 accept="image/*"
                                 className={classes.input}
-                                id="outlined-button-file"
+                                id={"outlined-button-file" + id}
+                                onChange={e => { this.handleImageChange(e) }}
                                 type="file"
                             />
                             WYBIERZ ZDJĘCIE DO ZADANIA
                     </Button>
                     </label>
                     <img
+                        id={"imgSpotlight" + id}
                         src={formValues.urlZdjeciaDoZadania}
-                        width="15%" height="15%" />
+                        width="15%" height="15%"
+                        alt={"img" + id} />
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        size="large"
+                        disabled={loading}
+                        className={classes.saveBtn}
+                        onClick={this.handleButtonClick}
+                    >
+                        {this.state.buttonMessage}
+                        {this.state.loading && <CircularProgress size={24} className={classes.buttonProgress} />}
+                    </Button>
 
                 </ExpansionPanelDetails>
             </ExpansionPanel>

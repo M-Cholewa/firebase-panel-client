@@ -31,8 +31,7 @@ class Home extends Component {
                     this.state.formValues.map((value, id) => {
                         if (value != null)
                             return (
-                                <MyForm formValues={value} id={id} />
-                                // <div>{value.tytul}</div> 
+                                <MyForm formValues={value} id={id} key={id} />
                             )
                     })}
 

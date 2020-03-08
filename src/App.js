@@ -44,9 +44,9 @@ const styles = {
 
 
     backgroundAttachment: "fixed",
-    backgroundPosition: "center",
+    // backgroundPosition: "center",
     backgroundRepeat: "no-repeat",
-    backgroundSize: "cover",
+    // backgroundSize: "cover",
 
     fontFamily: "sans-serif"
   },

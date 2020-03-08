@@ -4,7 +4,7 @@ import App from './App';
 import Login from './Components/Directories/Login'
 import { BrowserRouter, Route, Switch } from 'react-router-dom'
 import ProtectedRoute from './Components/Views/MyProtectedRoute'
-import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
+import { ThemeProvider as MuiThemeProvider } from '@material-ui/core/styles';
 import { createMuiTheme } from '@material-ui/core/styles';
 import * as firebase from 'firebase/app'
 
@@ -59,7 +59,7 @@ class ConfigApp extends Component {
             if (error.response.status === 401) {
                 console.log("--------401 unauthorized-----------")
             } else if (error.response.status === 403) {
-                console.log("--------403 unauthorized-----------")
+                console.log("--------403 forbidden-----------")
             }
             // console.log({ "response": error.response.data, "result": false })
             return { "response": error.response.data, "result": false }
