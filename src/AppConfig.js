@@ -60,7 +60,8 @@ class ConfigApp extends Component {
                 console.log("--------401 unauthorized-----------")
             } else if (error.response.status === 403) {
                 console.log("--------403 forbidden-----------")
-            }
+            } else if (error.response.status === 422)
+                console.log("--------422 wrong entity-----------")
             // console.log({ "response": error.response.data, "result": false })
             return { "response": error.response.data, "result": false }
         })

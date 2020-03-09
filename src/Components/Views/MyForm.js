@@ -38,7 +38,8 @@ class MyForm extends Component {
         this.state = {
             labelWidth: 0,
             loading: false,
-            // success: false,
+            responseObtained: false,
+            success: true,
             // image: '',
             buttonMessage: 'Zapisz',
         }
@@ -60,7 +61,7 @@ class MyForm extends Component {
             fr.readAsDataURL(files[0]);
         }
         // console.log(this.state.image)
-        console.log(document.getElementById("outlined-button-file" + this.props.id).files[0])
+        // console.log(document.getElementById("outlined-button-file" + this.props.id).files[0])
         // console.log(event.target.files[0])
 
         // this.setState({
@@ -71,17 +72,23 @@ class MyForm extends Component {
     handleButtonClick = () => {
         if (!this.state.loading) {
             this.setState({
-                // success: false,
                 loading: true,
                 buttonMessage: 'Czekaj..',
             })
-            setTimeout(() => {
-                this.setState({
-                    // success: true,
-                    loading: false,
-                    buttonMessage: 'Zapisano'
+            let file = document.getElementById("outlined-button-file" + this.props.id).files[0];
+            let formData = new FormData();
+            formData.append('image', file);
+
+            Axios.post('http://localhost:8080/submitForm', formData)
+                .then(res => {
+                    this.setState({
+                        responseObtained: true,
+                        success: res.result,
+                        loading: false,
+                        buttonMessage: res.response
+                    })
+                    console.log(res)
                 })
-            }, 3000)
         }
     }
 
@@ -247,6 +254,13 @@ class MyForm extends Component {
                         color="primary"
                         size="large"
                         disabled={loading}
+                        // color={red[100]}
+                        style={{
+                            backgroundColor: (this.state.responseObtained && !this.state.success)
+                                ? red["A700"] : "#3f51b5"
+                        }}
+                        // style={{ backgroundColor: red[500] }}
+                        // style={this.state.responseObtained&&}
                         className={classes.saveBtn}
                         onClick={this.handleButtonClick}
                     >

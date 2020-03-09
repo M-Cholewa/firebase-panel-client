@@ -27,6 +27,7 @@ class ProtectedRoute extends Component {
     render() {
         const { component: Component, ...rest } = this.props
         const { isAuthenticated, responseObtained } = this.state
+        console.log('protected route')
 
         if (!isAuthenticated && responseObtained) {
             return <Redirect to="/login" />
