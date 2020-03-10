@@ -29,7 +29,8 @@ const styles = theme => ({
     },
     saveBtn: {
         marginTop: 5,
-    }
+    },
+
 })
 
 class MyForm extends Component {
@@ -40,33 +41,22 @@ class MyForm extends Component {
             loading: false,
             responseObtained: false,
             success: true,
-            // image: '',
             buttonMessage: 'Zapisz',
+            czyWymagane: true,
+            dobreOdpowiedzi: [],
         }
     }
 
     handleImageChange = event => {
-        // console.log(document.getElementById("outlined-button-file" + this.props.id).value)
-        // console.log(event.target.files)
-        // console.log(event.target.files[0])
         let files = event.target.files;
         if (FileReader && files && files.length) {
             var fr = new FileReader();
             fr.onload = () => {
-                // this.setState({
-                //     image: fr.result
-                // })
                 document.getElementById("imgSpotlight" + this.props.id).src = fr.result;
             }
             fr.readAsDataURL(files[0]);
         }
-        // console.log(this.state.image)
-        // console.log(document.getElementById("outlined-button-file" + this.props.id).files[0])
-        // console.log(event.target.files[0])
 
-        // this.setState({
-        //     image: event.target.files[0]
-        // })
     }
 
     handleButtonClick = () => {
@@ -75,11 +65,10 @@ class MyForm extends Component {
                 loading: true,
                 buttonMessage: 'Czekaj..',
             })
-            let file = document.getElementById("outlined-button-file" + this.props.id).files[0];
-            let formData = new FormData();
-            formData.append('image', file);
+            // this.getFormValues()
 
-            Axios.post('http://localhost:8080/submitForm', formData)
+
+            Axios.post('http://localhost:8080/submitForm', this.getFormValues())
                 .then(res => {
                     this.setState({
                         responseObtained: true,
@@ -91,11 +80,61 @@ class MyForm extends Component {
                 })
         }
     }
+    handleTaskRemove = () => {
+        Axios.post('http://localhost:8080/removeTask', { 'key': this.props.taskID })
+            .then(res => {
+                alert('usunieto! ' + res)
+            })
+            .catch(err => {
+                alert('blad! ' + err)
+            })
+
+    }
+
+    getFormValues = () => {
+        let id = this.props.id
+
+        let lokalizacjaDl = document.getElementById("lokalizacjaDl" + id).value
+        let lokalizacjaSzer = document.getElementById("lokalizacjaSzer" + id).value
+        let podpisObrazka = document.getElementById("podpisObrazka" + id).value
+        let podtytul = document.getElementById("podtytul" + id).value
+        let trescZadania = document.getElementById("trescZadania" + id).value
+        let tytul = document.getElementById("tytul" + id).value
+        let wprowadzenieDoZadania = document.getElementById("wprowadzenieDoZadania" + id).value
+        let file = document.getElementById("outlined-button-file" + id).files[0];
+
+        let formData = new FormData();
+        formData.append('key', this.props.taskID)
+        formData.append("czyWymagane", this.state.czyWymagane)
+        formData.append("dobreOdpowiedzi", JSON.stringify(this.state.dobreOdpowiedzi))
+        formData.append("lokalizacjaDl", lokalizacjaDl)
+        formData.append("lokalizacjaSzer", lokalizacjaSzer)
+        formData.append("podpisObrazka", podpisObrazka)
+        formData.append("podtytul", podtytul)
+        formData.append("trescZadania", trescZadania)
+        formData.append("wprowadzenieDoZadania", wprowadzenieDoZadania)
+        formData.append("tytul", tytul)
+        formData.append('image', file ? file : this.props.formValues.urlZdjeciaDoZadania);
+        // console.log(file ? file : this.props.formValues.urlZdjeciaDoZadania)
+
+        // console.log(czyWymagane)
+
+        // for (var pair of formData.entries()) {
+        //     console.log(pair[0] + ', ' + pair[1]);
+        // }
+
+
+        return formData
+    }
 
     componentDidMount() {
         this.setState({
             labelWidth: ReactDOM.findDOMNode(this.InputLabelRef).offsetWidth
         });
+        this.setState({
+            czyWymagane: this.props.formValues.czyWymagane,
+            dobreOdpowiedzi: this.props.formValues.dobreOdpowiedzi
+        })
     }
 
     render() {
@@ -113,7 +152,10 @@ class MyForm extends Component {
 
                     <IconButton
                         aria-label="Usuń zadanie"
-                        onClick={event => event.stopPropagation()}
+                        onClick={event => {
+                            this.handleTaskRemove()
+                            event.stopPropagation()
+                        }}
                         onFocus={event => event.stopPropagation()}>
                         <DeleteIcon style={{
                             color: red[500]
@@ -129,8 +171,12 @@ class MyForm extends Component {
 
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails className={classes.details}>
+                    {/* <form className={classes.root} name="f" method="POST" onSubmit={this.handleSubmit}> */}
+
                     "czyWymagane"
-                    <FormControl variant="outlined" className={classes.formControl}>
+                    <FormControl variant="outlined"
+                        className={classes.formControl}
+                        id={"formControl" + id}>
                         <InputLabel ref={ref => {
                             this.InputLabelRef = ref;
                         }}
@@ -140,9 +186,10 @@ class MyForm extends Component {
                         <Select
                             required
                             labelId="czyWymagane"
+                            onChange={event => this.setState({ czyWymagane: event.target.value })}
                             id={"demo-simple-select-outlined" + id}
                             labelWidth={this.state.labelWidth}
-                            defaultValue={formValues.czyWymagane}
+                            value={this.state.czyWymagane}
                         >
                             <MenuItem value={true}>Tak</MenuItem>
                             <MenuItem value={false}>Nie</MenuItem>
@@ -153,11 +200,15 @@ class MyForm extends Component {
                     <ChipInput
                         id={"dobreOdpowiedzi" + id}
                         defaultValue={formValues.dobreOdpowiedzi}
-                        // defaultValue={formValues.dobreOdpowiedzi}
+                        onChange={event => {
+                            // console.log(event)
+                            this.setState({ dobreOdpowiedzi: event })
+                        }}
                         variant="outlined"
                         label="dobreOdpowiedzi"
                         style={{ margin: 8 }}
-                        type="number"
+                        type="text"
+                        margin="normal"
                         required
                     />
 
@@ -226,6 +277,16 @@ class MyForm extends Component {
                         style={{ margin: 8 }}
                         margin="normal"
                     />
+                    wprowadzenieDoZadania
+                    <TextField
+                        id={"wprowadzenieDoZadania" + id}
+                        defaultValue={formValues.wprowadzenieDoZadania}
+                        variant="outlined"
+                        label="wprowadzenieDoZadania"
+                        required
+                        style={{ margin: 8 }}
+                        margin="normal"
+                    />
                     "urlZdjeciaDoZadania"
 
                 <label htmlFor={"outlined-button-file" + id}>
@@ -250,6 +311,7 @@ class MyForm extends Component {
                         width="15%" height="15%"
                         alt={"img" + id} />
                     <Button
+                        type="submit"
                         variant="contained"
                         color="primary"
                         size="large"
@@ -264,10 +326,12 @@ class MyForm extends Component {
                         className={classes.saveBtn}
                         onClick={this.handleButtonClick}
                     >
+                        {/* <input type="submit" name="" value="Login"></input> */}
+
                         {this.state.buttonMessage}
                         {this.state.loading && <CircularProgress size={24} className={classes.buttonProgress} />}
                     </Button>
-
+                    {/* </form> */}
                 </ExpansionPanelDetails>
             </ExpansionPanel>
         </Paper>);
