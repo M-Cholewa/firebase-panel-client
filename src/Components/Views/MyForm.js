@@ -5,7 +5,7 @@ import { ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails, FormContr
 import ChipInput from 'material-ui-chip-input'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import DeleteIcon from '@material-ui/icons/Delete';
-import { red } from '@material-ui/core/colors';
+import { red, green } from '@material-ui/core/colors';
 import { withStyles } from '@material-ui/core/styles'
 import Axios from "axios";
 
@@ -318,8 +318,13 @@ class MyForm extends Component {
                         disabled={loading}
                         // color={red[100]}
                         style={{
-                            backgroundColor: (this.state.responseObtained && !this.state.success)
-                                ? red["A700"] : "#3f51b5"
+                            backgroundColor:
+                                (!this.state.responseObtained)
+                                    ? "#3f51b5"
+                                    : this.state.success
+                                        ? green[500]
+                                        : red["A700"]
+
                         }}
                         // style={{ backgroundColor: red[500] }}
                         // style={this.state.responseObtained&&}
