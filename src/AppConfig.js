@@ -53,7 +53,6 @@ class ConfigApp extends Component {
         Axios.defaults.withCredentials = true
 
         Axios.interceptors.response.use(response => {
-            // console.log({ "response": response.data, "result": true })
             return { "response": response.data, "result": true }
         }, error => {
             if (error.response.status === 401) {
@@ -62,16 +61,10 @@ class ConfigApp extends Component {
                 console.log("--------403 forbidden-----------")
             } else if (error.response.status === 422)
                 console.log("--------422 wrong entity-----------")
-            // console.log({ "response": error.response.data, "result": false })
             return { "response": error.response.data, "result": false }
         })
         firebase.initializeApp(firebaseConfig);
     }
-
-    // particlesItem = () => (
-    //     <Particles params={particlesParams} style={styles.particles} />
-    // )
-
     render() {
         return (
             <MuiThemeProvider theme={theme}>

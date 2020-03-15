@@ -131,13 +131,13 @@ const styles = theme => ({
     },
     paper: {
         ...theme.mixins.gutters(),
-        paddingTop: theme.spacing.unit * 2,
-        marginBottom: theme.spacing.unit * 2,
-        paddingBottom: theme.spacing.unit * 2,
+        paddingTop: theme.spacing(2),
+        marginBottom: theme.spacing(2),
+        paddingBottom: theme.spacing(2),
     },
     textField: {
-        marginLeft: theme.spacing.unit,
-        marginRight: theme.spacing.unit,
+        marginLeft: theme.spacing(1),
+        marginRight: theme.spacing(1),
     },
     buttonProgress: {
         color: green[500],

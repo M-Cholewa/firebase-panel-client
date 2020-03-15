@@ -1,11 +1,10 @@
 import React, { Component } from 'react'
-import Fab from '@material-ui/core/Fab';
-import AddIcon from '@material-ui/icons/Add'
+
 import MyForm from '../Views/MyForm'
+import MyFormDialog from '../Views/MyFormDialog'
 import * as firebase from "firebase/app";
 import config from '../../Files/FirebaseConfig'
 import "firebase/database"
-import Axios from "axios";
 
 
 class Home extends Component {
@@ -14,62 +13,65 @@ class Home extends Component {
         this.state = {
             labelWidth: 0,
             formValues: [],
+            dialogOpened: false,
         }
-        // Axios.post('http://localhost:8080/getDB').then(res => {
-        //     this.setState({ formValues: res.response })
-        //     console.log(res.response)
-        //     console.log("RES ")
-        // })
     }
 
     componentDidMount() {
         this.init()
 
     }
+
+    toggleDialogOpen = () => {
+        this.setState(prevState => (
+            { dialogOpened: !prevState.dialogOpened })
+        )
+    }
+
     init = () => {
         return new Promise(resolve => {
             if (!firebase.apps.length)
                 firebase.initializeApp(config);
-            firebase.database().ref('zadanie')
+            firebase.database().ref('zadanie/')
                 .on('value', snapshot => {
-                    // console.log(snapshot.val())
-                    // let val = snapshot.val().filter(_val => _val)
-                    // console.log(val)
+                    // console.log(JSON.stringify(snapshot.val()))
+                    // console.log(snapshot.key)
                     this.setState({ formValues: snapshot.val() })
                 });
         })
     }
 
     render() {
-        // console.log(this.state.formValues)
         let index = 0;
         return (
             <div>
-                <Fab color="primary" aria-label="add">
-                    <AddIcon />
-                </Fab>
-
+                <MyFormDialog
+                // open={this.state.dialogOpened} closeCb={this.toggleDialogOpen}
+                />
                 {
-                    // this.state.formValues.forEach((element, id, array) => {
-                    //     let key = Object.keys(array)[id]
-                    //     console.log(key + " KLUCZ")
-                    // })
-                    // this.state.formValues.forEach((value, id) => {
-                    //     console.log(value)
-                    // })
-                    this.state.formValues.map((value) => {
-                        if (value != null) {
-                            // console.log("ID" + id)
-                            let key = Object.keys(this.state.formValues)[index]
-                            console.log(key + " KLUCZ")
-                            index++
-                            return (
-                                <MyForm formValues={value} id={index} taskID={key} key={index} />
-                            )
-                        }
-                    })
-                }
+                    Object.values(this.state.formValues).
+                        map(value => {
+                            if (value != null) {
+                                let key = Object.keys(this.state.formValues)[index]
+                                index++
+                                return (
+                                    <MyForm formValues={value} id={index} taskID={key} key={index} isNew={false} />
+                                )
+                            }
+                            console.log(value)
+                        })
 
+                }
+                {/* {this.state.formValues.map((value) => {
+                    if (value != null) {
+                        let key = Object.keys(this.state.formValues)[index]
+                        index++
+                        return (
+                            <MyForm formValues={value} id={index} taskID={key} key={index} isNew={false} />
+                        )
+                    }
+                })
+                } */}
             </div>
         );
     }

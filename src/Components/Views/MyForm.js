@@ -12,7 +12,7 @@ import Axios from "axios";
 
 const styles = theme => ({
     paper: {
-        marginBottom: theme.spacing.unit * 2,
+        marginBottom: theme.spacing(2),
     },
     formControl: {
         margin: theme.spacing(1),
@@ -59,16 +59,16 @@ class MyForm extends Component {
 
     }
 
-    handleButtonClick = () => {
+    handleFormSubmit = () => {
         if (!this.state.loading) {
             this.setState({
                 loading: true,
                 buttonMessage: 'Czekaj..',
             })
-            // this.getFormValues()
 
+            // console.log(this.getFormValues())
 
-            Axios.post('http://localhost:8080/submitForm', this.getFormValues())
+            Axios.post('http://localhost:8080/secure/submitForm', this.getFormValues())
                 .then(res => {
                     this.setState({
                         responseObtained: true,
@@ -76,12 +76,18 @@ class MyForm extends Component {
                         loading: false,
                         buttonMessage: res.response
                     })
-                    console.log(res)
+                    let cbMessage = res.result ? "Zapisz" : "Sprawdź dane i spróbuj ponownie"
+                    setTimeout(() => this.setState(
+                        {
+                            responseObtained: false,
+                            buttonMessage: cbMessage
+                        }
+                    ), 5000)
                 })
         }
     }
     handleTaskRemove = () => {
-        Axios.post('http://localhost:8080/removeTask', { 'key': this.props.taskID })
+        Axios.post('http://localhost:8080/secure/removeTask', { 'key': this.props.taskID })
             .then(res => {
                 alert('usunieto! ' + res)
             })
@@ -103,8 +109,10 @@ class MyForm extends Component {
         let wprowadzenieDoZadania = document.getElementById("wprowadzenieDoZadania" + id).value
         let file = document.getElementById("outlined-button-file" + id).files[0];
 
+
         let formData = new FormData();
-        formData.append('key', this.props.taskID)
+        if (this.props.taskID)
+            formData.append('key', this.props.taskID)
         formData.append("czyWymagane", this.state.czyWymagane)
         formData.append("dobreOdpowiedzi", JSON.stringify(this.state.dobreOdpowiedzi))
         formData.append("lokalizacjaDl", lokalizacjaDl)
@@ -115,14 +123,6 @@ class MyForm extends Component {
         formData.append("wprowadzenieDoZadania", wprowadzenieDoZadania)
         formData.append("tytul", tytul)
         formData.append('image', file ? file : this.props.formValues.urlZdjeciaDoZadania);
-        // console.log(file ? file : this.props.formValues.urlZdjeciaDoZadania)
-
-        // console.log(czyWymagane)
-
-        // for (var pair of formData.entries()) {
-        //     console.log(pair[0] + ', ' + pair[1]);
-        // }
-
 
         return formData
     }
@@ -139,8 +139,7 @@ class MyForm extends Component {
 
     render() {
         const { loading } = this.state
-        const { formValues, id, classes } = this.props
-
+        const { formValues, id, isNew, classes } = this.props
         return (<Paper className={classes.paper} elevation={1}>
             <ExpansionPanel square={false}>
                 <ExpansionPanelSummary
@@ -150,17 +149,20 @@ class MyForm extends Component {
                     id={"additional-actions1-header" + id}
                 >
 
-                    <IconButton
-                        aria-label="Usuń zadanie"
-                        onClick={event => {
-                            this.handleTaskRemove()
-                            event.stopPropagation()
-                        }}
-                        onFocus={event => event.stopPropagation()}>
-                        <DeleteIcon style={{
-                            color: red[500]
-                        }} />
-                    </IconButton>
+                    {/* {console.log(isNew)} */}
+                    {isNew ? <div />
+                        : <IconButton
+                            aria-label="Usuń zadanie"
+                            onClick={event => {
+                                this.handleTaskRemove()
+                                event.stopPropagation()
+                            }}
+                            onFocus={event => event.stopPropagation()}>
+                            <DeleteIcon style={{
+                                color: red[500]
+                            }} />
+                        </IconButton>}
+
 
                     <FormControlLabel
                         className={classes.formControlLabel}
@@ -171,172 +173,184 @@ class MyForm extends Component {
 
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails className={classes.details}>
-                    {/* <form className={classes.root} name="f" method="POST" onSubmit={this.handleSubmit}> */}
+                    <form
+                        style={{ display: 'inherit', flexDirection: "column" }}
+                        name="f" method="POST" onSubmit={e => {
+                            e.preventDefault()
+                            this.handleFormSubmit()
 
-                    "czyWymagane"
+                        }}>
+
+                        "czyWymagane"
                     <FormControl variant="outlined"
-                        className={classes.formControl}
-                        id={"formControl" + id}>
-                        <InputLabel ref={ref => {
-                            this.InputLabelRef = ref;
-                        }}
-                            id={"czyWymagane" + id}>
-                            czyWymagane
+                            className={classes.formControl}
+                            id={"formControl" + id}>
+                            <InputLabel ref={ref => {
+                                this.InputLabelRef = ref;
+                            }}
+                                id={"czyWymagane" + id}>
+                                czyWymagane
                     </InputLabel>
-                        <Select
-                            required
-                            labelId="czyWymagane"
-                            onChange={event => this.setState({ czyWymagane: event.target.value })}
-                            id={"demo-simple-select-outlined" + id}
-                            labelWidth={this.state.labelWidth}
-                            value={this.state.czyWymagane}
-                        >
-                            <MenuItem value={true}>Tak</MenuItem>
-                            <MenuItem value={false}>Nie</MenuItem>
-                        </Select>
-                    </FormControl>
-                    <br />
+                            <Select
+                                required
+                                name="czyWymagane"
+                                labelId="czyWymagane"
+                                onChange={event => this.setState({ czyWymagane: event.target.value })}
+                                // id={"demo-simple-select-outlined" + id}
+                                labelWidth={this.state.labelWidth}
+                                defaultValue={this.state.czyWymagane}
+                            >
+                                <MenuItem value={true}>Tak</MenuItem>
+                                <MenuItem value={false}>Nie</MenuItem>
+                            </Select>
+                        </FormControl>
+                        <br />
                     "dobreOdpowiedzi"<br />
-                    <ChipInput
-                        id={"dobreOdpowiedzi" + id}
-                        defaultValue={formValues.dobreOdpowiedzi}
-                        onChange={event => {
-                            // console.log(event)
-                            this.setState({ dobreOdpowiedzi: event })
-                        }}
-                        variant="outlined"
-                        label="dobreOdpowiedzi"
-                        style={{ margin: 8 }}
-                        type="text"
-                        margin="normal"
-                        required
-                    />
+
+                        <ChipInput
+                            id={"dobreOdpowiedzi" + id}
+                            defaultValue={formValues.dobreOdpowiedzi}
+                            onChange={event => {
+                                this.setState({ dobreOdpowiedzi: event })
+                            }}
+                            variant="outlined"
+                            label="dobreOdpowiedzi"
+                            style={{
+                                margin: 8,
+                                marginBottom: 25
+                            }}
+                            helperText="Wpisz jedną odpowiedź i kliknij 'enter'"
+                            type="text"
+                            margin="normal"
+                        />
 
                     "lokalizacjaDl"<br />
-                    <TextField
-                        id={"lokalizacjaDl" + id}
-                        defaultValue={formValues.lokalizacjaDl}
-                        inputProps={{
-                            step: "0.01",
-                            lang: "en"
-                        }}
-                        variant="outlined"
-                        label="lokalizacjaDl"
-                        style={{ margin: 8 }}
-                        type="number"
-                        required
-                        margin="normal"
-                    />
+                        <TextField
+                            id={"lokalizacjaDl" + id}
+                            defaultValue={formValues.lokalizacjaDl}
+                            inputProps={{
+                                step: "0.01",
+                                lang: "en"
+                            }}
+                            variant="outlined"
+                            label="lokalizacjaDl"
+                            style={{ margin: 8 }}
+                            name="lokalizacjaDl"
+                            type="number"
+                            required
+                            margin="normal"
+                        />
                     "lokalizacjaSzer"<br />
-                    <TextField
-                        id={"lokalizacjaSzer" + id}
-                        defaultValue={formValues.lokalizacjaSzer}
-                        variant="outlined"
-                        label="lokalizacjaSzer"
-                        style={{ margin: 8 }}
-                        type="number"
-                        required
-                        margin="normal"
-                    />
+                        <TextField
+                            id={"lokalizacjaSzer" + id}
+                            defaultValue={formValues.lokalizacjaSzer}
+                            variant="outlined"
+                            label="lokalizacjaSzer"
+                            style={{ margin: 8 }}
+                            name="lokalizacjaSzer"
+                            type="number"
+                            required
+                            margin="normal"
+                        />
                     "podpisObrazka"<br />
-                    <TextField
-                        id={"podpisObrazka" + id}
-                        defaultValue={formValues.podpisObrazka}
-                        variant="outlined"
-                        label="podpisObrazka"
-                        style={{ margin: 8 }}
-                        margin="normal"
-                    />
+                        <TextField
+                            id={"podpisObrazka" + id}
+                            defaultValue={formValues.podpisObrazka}
+                            variant="outlined"
+                            label="podpisObrazka"
+                            style={{ margin: 8 }}
+                            margin="normal"
+                        />
 
                     "podtytul"<br />
-                    <TextField
-                        id={"podtytul" + id}
-                        defaultValue={formValues.podtytul}
-                        variant="outlined"
-                        label="podtytul"
-                        style={{ margin: 8 }}
-                        margin="normal"
-                    />
+                        <TextField
+                            required
+                            id={"podtytul" + id}
+                            defaultValue={formValues.podtytul}
+                            variant="outlined"
+                            label="podtytul"
+                            style={{ margin: 8 }}
+                            name="podtytul"
+                            margin="normal"
+                        />
                     "trescZadania"<br />
-                    <TextField
-                        id={"trescZadania" + id}
-                        defaultValue={formValues.trescZadania}
-                        variant="outlined"
-                        label="trescZadania"
-                        required
-                        style={{ margin: 8 }}
-                        margin="normal"
-                    />
+                        <TextField
+                            id={"trescZadania" + id}
+                            defaultValue={formValues.trescZadania}
+                            variant="outlined"
+                            label="trescZadania"
+                            required
+                            style={{ margin: 8 }}
+                            name="trescZadania"
+                            margin="normal"
+                        />
                     "tytul"
                     <TextField
-                        id={"tytul" + id}
-                        defaultValue={formValues.tytul}
-                        variant="outlined"
-                        label="tytul"
-                        required
-                        style={{ margin: 8 }}
-                        margin="normal"
-                    />
+                            id={"tytul" + id}
+                            defaultValue={formValues.tytul}
+                            variant="outlined"
+                            label="tytul"
+                            required
+                            style={{ margin: 8 }}
+                            name="tytul"
+                            margin="normal"
+                        />
                     wprowadzenieDoZadania
                     <TextField
-                        id={"wprowadzenieDoZadania" + id}
-                        defaultValue={formValues.wprowadzenieDoZadania}
-                        variant="outlined"
-                        label="wprowadzenieDoZadania"
-                        required
-                        style={{ margin: 8 }}
-                        margin="normal"
-                    />
+                            id={"wprowadzenieDoZadania" + id}
+                            defaultValue={formValues.wprowadzenieDoZadania}
+                            variant="outlined"
+                            label="wprowadzenieDoZadania"
+                            required
+                            style={{ margin: 8 }}
+                            name="wprowadzenieDoZadania"
+                            margin="normal"
+                        />
                     "urlZdjeciaDoZadania"
 
                 <label htmlFor={"outlined-button-file" + id}>
-                        <Button
-                            variant="outlined"
-                            component="span"
-                            style={{ margin: 8 }}
-                        >
-                            <input
-                                accept="image/*"
-                                className={classes.input}
-                                id={"outlined-button-file" + id}
-                                onChange={e => { this.handleImageChange(e) }}
-                                type="file"
-                            />
+                            <Button
+                                variant="outlined"
+                                component="span"
+                                style={{ margin: 8 }}
+                            >
+                                <input
+                                    accept="image/*"
+                                    className={classes.input}
+                                    id={"outlined-button-file" + id}
+                                    onChange={e => { this.handleImageChange(e) }}
+                                    type="file"
+                                />
                             WYBIERZ ZDJĘCIE DO ZADANIA
-                    </Button>
-                    </label>
-                    <img
-                        id={"imgSpotlight" + id}
-                        src={formValues.urlZdjeciaDoZadania}
-                        width="15%" height="15%"
-                        alt={"img" + id} />
-                    <Button
-                        type="submit"
-                        variant="contained"
-                        color="primary"
-                        size="large"
-                        disabled={loading}
-                        // color={red[100]}
-                        style={{
-                            backgroundColor:
-                                (!this.state.responseObtained)
-                                    ? "#3f51b5"
-                                    : this.state.success
-                                        ? green[500]
-                                        : red["A700"]
 
-                        }}
-                        // style={{ backgroundColor: red[500] }}
-                        // style={this.state.responseObtained&&}
-                        className={classes.saveBtn}
-                        onClick={this.handleButtonClick}
-                    >
-                        {/* <input type="submit" name="" value="Login"></input> */}
-
-                        {this.state.buttonMessage}
-                        {this.state.loading && <CircularProgress size={24} className={classes.buttonProgress} />}
                     </Button>
-                    {/* </form> */}
+                        </label>
+                        <img
+                            id={"imgSpotlight" + id}
+                            src={formValues.urlZdjeciaDoZadania}
+                            width="15%" height="15%"
+                            alt={"img" + id} />
+                        <Button
+                            type="submit"
+                            variant="contained"
+                            color="primary"
+                            size="large"
+                            disabled={loading}
+                            style={{
+                                backgroundColor:
+                                    (!this.state.responseObtained)
+                                        ? "#3f51b5"
+                                        : this.state.success
+                                            ? green[500]
+                                            : red["A700"]
+
+                            }}
+                            className={classes.saveBtn}
+                        >
+                            {this.state.buttonMessage}
+                            {this.state.loading && <CircularProgress size={24} className={classes.buttonProgress} />}
+                        </Button>
+                    </form>
                 </ExpansionPanelDetails>
             </ExpansionPanel>
         </Paper>);

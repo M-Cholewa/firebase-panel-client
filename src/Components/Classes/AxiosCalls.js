@@ -5,7 +5,7 @@ import "firebase/auth";
 
 class AxiosCalls {
     checkAuths = () => {
-        return Axios.post('http://localhost:8080/checkLogged')
+        return Axios.post('http://localhost:8080/secure/checkLogged')
     }
 
     // getDB = () => {

@@ -16,9 +16,9 @@ const styles = theme => ({
     },
     paper: {
         ...theme.mixins.gutters(),
-        paddingTop: theme.spacing.unit * 2,
-        marginBottom: theme.spacing.unit * 2,
-        paddingBottom: theme.spacing.unit * 2,
+        paddingTop: theme.spacing(2),
+        marginBottom: theme.spacing(2),
+        paddingBottom: theme.spacing(2),
     },
     drawer: {
         [theme.breakpoints.up('sm')]: {
@@ -31,7 +31,7 @@ const styles = theme => ({
     },
     content: {
         flexGrow: 1,
-        padding: theme.spacing.unit * 3,
+        padding: theme.spacing(3),
     },
     toolbar: theme.mixins.toolbar,
 });
