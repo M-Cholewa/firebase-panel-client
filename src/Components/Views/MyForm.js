@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import ReactDOM from "react-dom";
-import { Select, MenuItem, FormControl, InputLabel, Paper, Button, TextField, CircularProgress } from '@material-ui/core';
+import { Select, MenuItem, FormControl, InputLabel, Button, TextField, CircularProgress } from '@material-ui/core';
 import { ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails, FormControlLabel, IconButton } from '@material-ui/core';
 import ChipInput from 'material-ui-chip-input'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
@@ -8,11 +8,14 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import { red, green } from '@material-ui/core/colors';
 import { withStyles } from '@material-ui/core/styles'
 import Axios from "axios";
+import { fade } from '@material-ui/core/styles/colorManipulator';
 
 
 const styles = theme => ({
-    paper: {
+    expPanel: {
         marginBottom: theme.spacing(2),
+        // backgroundColor: fade(theme.palette.primary.dark, 0.9),
+        // color: 'white'
     },
     formControl: {
         margin: theme.spacing(1),
@@ -66,8 +69,6 @@ class MyForm extends Component {
                 buttonMessage: 'Czekaj..',
             })
 
-            // console.log(this.getFormValues())
-
             Axios.post('http://localhost:8080/secure/submitForm', this.getFormValues())
                 .then(res => {
                     this.setState({
@@ -94,7 +95,6 @@ class MyForm extends Component {
             .catch(err => {
                 alert('blad! ' + err)
             })
-
     }
 
     getFormValues = () => {
@@ -107,13 +107,14 @@ class MyForm extends Component {
         let trescZadania = document.getElementById("trescZadania" + id).value
         let tytul = document.getElementById("tytul" + id).value
         let wprowadzenieDoZadania = document.getElementById("wprowadzenieDoZadania" + id).value
+        let kolejnoscZadania = document.getElementById("kolejnoscZadania" + id).value
         let file = document.getElementById("outlined-button-file" + id).files[0];
-
 
         let formData = new FormData();
         if (this.props.taskID)
             formData.append('key', this.props.taskID)
         formData.append("czyWymagane", this.state.czyWymagane)
+        formData.append("kolejnoscZadania", kolejnoscZadania)
         formData.append("dobreOdpowiedzi", JSON.stringify(this.state.dobreOdpowiedzi))
         formData.append("lokalizacjaDl", lokalizacjaDl)
         formData.append("lokalizacjaSzer", lokalizacjaSzer)
@@ -140,16 +141,15 @@ class MyForm extends Component {
     render() {
         const { loading } = this.state
         const { formValues, id, isNew, classes } = this.props
-        return (<Paper className={classes.paper} elevation={1}>
-            <ExpansionPanel square={false}>
+        return (
+            // <Paper className={classes.paper} elevation={15}>
+            <ExpansionPanel square={false} className={classes.expPanel}>
                 <ExpansionPanelSummary
                     expandIcon={<ExpandMoreIcon />}
                     aria-label="Expand"
                     aria-controls="additional-actions1-content"
                     id={"additional-actions1-header" + id}
                 >
-
-                    {/* {console.log(isNew)} */}
                     {isNew ? <div />
                         : <IconButton
                             aria-label="Usuń zadanie"
@@ -162,7 +162,6 @@ class MyForm extends Component {
                                 color: red[500]
                             }} />
                         </IconButton>}
-
 
                     <FormControlLabel
                         className={classes.formControlLabel}
@@ -198,7 +197,8 @@ class MyForm extends Component {
                                 onChange={event => this.setState({ czyWymagane: event.target.value })}
                                 // id={"demo-simple-select-outlined" + id}
                                 labelWidth={this.state.labelWidth}
-                                defaultValue={this.state.czyWymagane}
+                                value={this.state.czyWymagane}
+                            // value={false}
                             >
                                 <MenuItem value={true}>Tak</MenuItem>
                                 <MenuItem value={false}>Nie</MenuItem>
@@ -261,7 +261,16 @@ class MyForm extends Component {
                             style={{ margin: 8 }}
                             margin="normal"
                         />
-
+                    "kolejnoscZadania"<br />
+                        <TextField
+                            id={"kolejnoscZadania" + id}
+                            defaultValue={formValues.kolejnoscZadania}
+                            variant="outlined"
+                            label="kolejnoscZadania"
+                            style={{ margin: 8 }}
+                            required
+                            margin="normal"
+                        />
                     "podtytul"<br />
                         <TextField
                             required
@@ -353,7 +362,7 @@ class MyForm extends Component {
                     </form>
                 </ExpansionPanelDetails>
             </ExpansionPanel>
-        </Paper>);
+        );
     }
 }
 

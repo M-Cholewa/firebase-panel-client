@@ -33,7 +33,6 @@ class App extends Component {
   }
 }
 const styles = {
-
   section: {
     backgroundImage: `url(${background})`,
     // backgroundRepeat: "no-repeat",
@@ -41,6 +40,7 @@ const styles = {
     height: "100%",
     width: "100%",
     // position: "absolute",
+    // opacity: 0.6,
 
 
     backgroundAttachment: "fixed",

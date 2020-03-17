@@ -7,6 +7,7 @@ import ProtectedRoute from './Components/Views/MyProtectedRoute'
 import { ThemeProvider as MuiThemeProvider } from '@material-ui/core/styles';
 import { createMuiTheme } from '@material-ui/core/styles';
 import * as firebase from 'firebase/app'
+import { indigo, blue } from '@material-ui/core/colors';
 
 import Particles from 'react-particles-js'
 import particlesParams from './Files/json/particles'

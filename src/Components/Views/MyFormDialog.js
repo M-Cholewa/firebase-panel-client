@@ -10,7 +10,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 const useStyles = makeStyles(theme => ({
     fab: {
-        position: 'absolute',
+        position: 'fixed',
         bottom: theme.spacing(2),
         right: theme.spacing(2),
     },
@@ -26,12 +26,11 @@ export default function MyFormDialog(props) {
     };
 
     const handleClose = () => {
-        // open = false
         setOpen(false);
     };
     return (
         <div>
-            <Fab color="primary" aria-label="add" className={classes.fab}
+            <Fab color="secondary" aria-label="add" className={classes.fab}
                 onClick={handleClickOpen}
             >
                 <AddIcon />

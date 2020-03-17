@@ -12,14 +12,13 @@ class Home extends Component {
         super(props);
         this.state = {
             labelWidth: 0,
-            formValues: [],
+            formValues: {},
             dialogOpened: false,
         }
     }
 
     componentDidMount() {
         this.init()
-
     }
 
     toggleDialogOpen = () => {
@@ -32,11 +31,15 @@ class Home extends Component {
         return new Promise(resolve => {
             if (!firebase.apps.length)
                 firebase.initializeApp(config);
-            firebase.database().ref('zadanie/')
+            firebase.database().ref('zadanie').orderByChild('kolejnoscZadania')
                 .on('value', snapshot => {
-                    // console.log(JSON.stringify(snapshot.val()))
-                    // console.log(snapshot.key)
-                    this.setState({ formValues: snapshot.val() })
+                    let form = {}
+                    snapshot.forEach((data) => {
+                        let dataKey = data.key.toString()
+                        form[dataKey] = data.val()
+                    });
+                    this.setState({ formValues: form })
+                    resolve()
                 });
         })
     }
@@ -45,9 +48,6 @@ class Home extends Component {
         let index = 0;
         return (
             <div>
-                <MyFormDialog
-                // open={this.state.dialogOpened} closeCb={this.toggleDialogOpen}
-                />
                 {
                     Object.values(this.state.formValues).
                         map(value => {
@@ -62,16 +62,7 @@ class Home extends Component {
                         })
 
                 }
-                {/* {this.state.formValues.map((value) => {
-                    if (value != null) {
-                        let key = Object.keys(this.state.formValues)[index]
-                        index++
-                        return (
-                            <MyForm formValues={value} id={index} taskID={key} key={index} isNew={false} />
-                        )
-                    }
-                })
-                } */}
+                <MyFormDialog />
             </div>
         );
     }
