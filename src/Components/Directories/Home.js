@@ -3,6 +3,7 @@ import React, { Component } from 'react'
 import MyForm from '../Views/MyForm'
 import MyFormDialog from '../Views/MyFormDialog'
 import * as firebase from "firebase/app";
+import CircularProgress from '@material-ui/core/CircularProgress'
 import config from '../../Files/FirebaseConfig'
 import "firebase/database"
 
@@ -14,6 +15,7 @@ class Home extends Component {
             labelWidth: 0,
             formValues: {},
             dialogOpened: false,
+            responseObtained: false,
         }
     }
 
@@ -38,7 +40,7 @@ class Home extends Component {
                         let dataKey = data.key.toString()
                         form[dataKey] = data.val()
                     });
-                    this.setState({ formValues: form })
+                    this.setState({ formValues: form, responseObtained: true })
                     resolve()
                 });
         })
@@ -46,19 +48,23 @@ class Home extends Component {
 
     render() {
         let index = 0;
+        const { formValues, responseObtained } = this.state
+        if (!responseObtained)
+            return (<CircularProgress size={60} style={{ color: "#eef3fd" }} />)
         return (
             <div>
                 {
-                    Object.values(this.state.formValues).
-                        map(value => {
+                    Object.values(formValues)
+                        .map(value => {
                             if (value != null) {
-                                let key = Object.keys(this.state.formValues)[index]
+                                let key = Object.keys(formValues)[index]
                                 index++
                                 return (
                                     <MyForm formValues={value} id={index} taskID={key} key={index} isNew={false} />
                                 )
+                            } else {
+                                return 0
                             }
-                            console.log(value)
                         })
 
                 }

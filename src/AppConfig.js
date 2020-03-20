@@ -7,10 +7,11 @@ import ProtectedRoute from './Components/Views/MyProtectedRoute'
 import { ThemeProvider as MuiThemeProvider } from '@material-ui/core/styles';
 import { createMuiTheme } from '@material-ui/core/styles';
 import * as firebase from 'firebase/app'
-import { indigo, blue } from '@material-ui/core/colors';
-
+// import { indigo, blue } from '@material-ui/core/colors';
 import Particles from 'react-particles-js'
-import particlesParams from './Files/json/particles'
+import particlesLoginParams from './Files/json/particlesLogin'
+// import particlesParams from './Files/json/particlesBG'
+import particlesBGParams from './Files/json/particlesBG'
 
 const theme = createMuiTheme({
     typography: {
@@ -30,7 +31,13 @@ const theme = createMuiTheme({
                 }
             }
         }
-    }
+    },
+    // palette: {
+    //     primary: {
+
+    //         main: "#3232ff"
+    //     }
+    // }
 });
 
 const firebaseConfig = {
@@ -76,14 +83,25 @@ class ConfigApp extends Component {
                                 <div>
                                     <Login>
                                         <Particles
-                                            params={particlesParams}
+                                            params={particlesLoginParams}
                                             style={styles.particles}
                                             width="100vw" height="99vh" />
                                     </Login>
                                 </div>
                             }>
                         </Route>
-                        <ProtectedRoute path="/" component={App} />
+                        <section style={styles.bgCanvas}>
+                            <Particles
+                                params={particlesBGParams}
+                                style={{
+                                    margin: "auto",
+                                    position: "fixed"
+                                    //  background: "rgba(255, 255, 255, 0)"
+                                }}
+                            />
+                            <ProtectedRoute path="/" component={App} />
+                        </section>
+
                     </Switch>
                 </BrowserRouter >
             </MuiThemeProvider>);
@@ -93,6 +111,12 @@ class ConfigApp extends Component {
 const styles = {
     particles: {
         margin: "auto",
+    },
+    bgCanvas: {
+        background: "linear-gradient(180deg, rgba(0,15,36,1) 0%, rgba(9,54,121,1) 90%, rgba(16,40,172,1) 100%)",
+        minHeight: "100vh",
+        height: "100%",
+        width: "100%",
     },
 }
 

@@ -8,14 +8,14 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import { red, green } from '@material-ui/core/colors';
 import { withStyles } from '@material-ui/core/styles'
 import Axios from "axios";
-import { fade } from '@material-ui/core/styles/colorManipulator';
+// import { fade } from '@material-ui/core/styles/colorManipulator';
 
 
 const styles = theme => ({
     expPanel: {
         marginBottom: theme.spacing(2),
-        // backgroundColor: fade(theme.palette.primary.dark, 0.9),
-        // color: 'white'
+        borderRadius: 5,
+
     },
     formControl: {
         margin: theme.spacing(1),
@@ -130,7 +130,7 @@ class MyForm extends Component {
 
     componentDidMount() {
         this.setState({
-            labelWidth: ReactDOM.findDOMNode(this.InputLabelRef).offsetWidth
+            // labelWidth: ReactDOM.findDOMNode(this.InputLabelRef).offsetWidth
         });
         this.setState({
             czyWymagane: this.props.formValues.czyWymagane,
@@ -143,7 +143,9 @@ class MyForm extends Component {
         const { formValues, id, isNew, classes } = this.props
         return (
             // <Paper className={classes.paper} elevation={15}>
-            <ExpansionPanel square={false} className={classes.expPanel}>
+            <ExpansionPanel TransitionProps={{ unmountOnExit: true }}
+                className={classes.expPanel}
+            >
                 <ExpansionPanelSummary
                     expandIcon={<ExpandMoreIcon />}
                     aria-label="Expand"

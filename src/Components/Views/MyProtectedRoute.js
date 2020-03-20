@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Route, Redirect } from 'react-router-dom'
 import AxiosCalls from '../Classes/AxiosCalls'
+import CircularProgress from '@material-ui/core/CircularProgress'
 
 class ProtectedRoute extends Component {
     axiosCall = new AxiosCalls()
@@ -34,7 +35,15 @@ class ProtectedRoute extends Component {
         } else if (isAuthenticated && responseObtained) {
             return <Route {...rest} render={() => (<Component {...this.props} />)} />
         } else {
-            return (<div>please wait... Loading</div>)
+            return (<div>
+                please wait... Loading
+                <CircularProgress size={60} style={{
+                    color: "#eef3fd", position: 'absolute',
+                    left: '50%',
+                    top: '50%',
+                    // transform: 'translate(-50%, -50%)'
+                }} />
+            </div>)
         }
     }
 }
