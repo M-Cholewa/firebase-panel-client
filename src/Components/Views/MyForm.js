@@ -3,6 +3,7 @@ import ReactDOM from "react-dom";
 import { Select, MenuItem, FormControl, InputLabel, Button, TextField, CircularProgress } from '@material-ui/core';
 import { ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails, FormControlLabel, IconButton } from '@material-ui/core';
 import ChipInput from 'material-ui-chip-input'
+import Img from 'react-image'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { red, green } from '@material-ui/core/colors';
@@ -47,7 +48,9 @@ class MyForm extends Component {
             buttonMessage: 'Zapisz',
             czyWymagane: true,
             dobreOdpowiedzi: [],
+            nodes: [],
         }
+        // let nodes = []
     }
 
     handleImageChange = event => {
@@ -65,26 +68,27 @@ class MyForm extends Component {
     handleFormSubmit = () => {
         if (!this.state.loading) {
             this.setState({
-                loading: true,
+                // loading: true,
                 buttonMessage: 'Czekaj..',
             })
+            this.getFormValues()
 
-            Axios.post('http://localhost:8080/secure/submitForm', this.getFormValues())
-                .then(res => {
-                    this.setState({
-                        responseObtained: true,
-                        success: res.result,
-                        loading: false,
-                        buttonMessage: res.response
-                    })
-                    let cbMessage = res.result ? "Zapisz" : "Sprawdź dane i spróbuj ponownie"
-                    setTimeout(() => this.setState(
-                        {
-                            responseObtained: false,
-                            buttonMessage: cbMessage
-                        }
-                    ), 5000)
-                })
+            // Axios.post('http://localhost:8080/secure/submitForm', this.getFormValues())
+            //     .then(res => {
+            //         this.setState({
+            //             responseObtained: true,
+            //             success: res.result,
+            //             loading: false,
+            //             buttonMessage: res.response
+            //         })
+            //         let cbMessage = res.result ? "Zapisz" : "Sprawdź dane i spróbuj ponownie"
+            //         setTimeout(() => this.setState(
+            //             {
+            //                 responseObtained: false,
+            //                 buttonMessage: cbMessage
+            //             }
+            //         ), 5000)
+            //     })
         }
     }
     handleTaskRemove = () => {
@@ -124,26 +128,42 @@ class MyForm extends Component {
         formData.append("wprowadzenieDoZadania", wprowadzenieDoZadania)
         formData.append("tytul", tytul)
         formData.append('image', file ? file : this.props.formValues.urlZdjeciaDoZadania);
-
-        return formData
+        for (var pair of formData.entries()) {
+            console.log(pair[0] + ', ' + pair[1]);
+        }
+        // return formData
     }
 
     componentDidMount() {
         this.setState({
-            // labelWidth: ReactDOM.findDOMNode(this.InputLabelRef).offsetWidth
+            labelWidth: ReactDOM.findDOMNode(this.InputLabelRef).offsetWidth
         });
         this.setState({
             czyWymagane: this.props.formValues.czyWymagane,
             dobreOdpowiedzi: this.props.formValues.dobreOdpowiedzi
         })
     }
+    addNode = node => {
+        // console.log(node)
+        // this.setState({nodes})
+        let nodes = this.state.nodes
+        nodes.push(node)
+        this.setState({ nodes })
+        console.log(this.state.nodes)
+        // input = node;
+    }
 
     render() {
-        const { loading } = this.state
+        const { loading, nodes } = this.state
         const { formValues, id, isNew, classes } = this.props
+        try {
+            nodes[0].value = formValues.podpisObrazka
+
+        } catch (error) {
+
+        }
         return (
-            // <Paper className={classes.paper} elevation={15}>
-            <ExpansionPanel TransitionProps={{ unmountOnExit: true }}
+            <ExpansionPanel
                 className={classes.expPanel}
             >
                 <ExpansionPanelSummary
@@ -199,7 +219,7 @@ class MyForm extends Component {
                                 onChange={event => this.setState({ czyWymagane: event.target.value })}
                                 // id={"demo-simple-select-outlined" + id}
                                 labelWidth={this.state.labelWidth}
-                                value={this.state.czyWymagane}
+                                value={this.state.czyWymagane || true}
                             // value={false}
                             >
                                 <MenuItem value={true}>Tak</MenuItem>
@@ -257,9 +277,11 @@ class MyForm extends Component {
                     "podpisObrazka"<br />
                         <TextField
                             id={"podpisObrazka" + id}
-                            defaultValue={formValues.podpisObrazka}
+                            // defaultValue={formValues.podpisObrazka}
                             variant="outlined"
                             label="podpisObrazka"
+                            // ref="podpisObrazka"
+                            inputRef={this.addNode}
                             style={{ margin: 8 }}
                             margin="normal"
                         />
@@ -336,10 +358,10 @@ class MyForm extends Component {
 
                     </Button>
                         </label>
-                        <img
+                        <Img
                             id={"imgSpotlight" + id}
                             src={formValues.urlZdjeciaDoZadania}
-                            width="15%" height="15%"
+                            style={{ width: "20%", height: "20%", margin: "auto" }}
                             alt={"img" + id} />
                         <Button
                             type="submit"

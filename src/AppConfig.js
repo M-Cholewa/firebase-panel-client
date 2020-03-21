@@ -76,29 +76,31 @@ class ConfigApp extends Component {
     render() {
         return (
             <MuiThemeProvider theme={theme}>
+
                 <BrowserRouter>
                     <Switch>
                         <Route strict path="/login"
                             render={() =>
                                 <div>
-                                    <Login>
-                                        <Particles
-                                            params={particlesLoginParams}
-                                            style={styles.particles}
-                                            width="100vw" height="99vh" />
-                                    </Login>
+                                    <section style={styles.bgCanvas}>
+                                        <Login >
+                                            <Particles
+                                                params={particlesLoginParams}
+                                                style={styles.particles}
+                                                width="100vw" height="99vh" />
+                                        </Login>
+                                    </section>
+
                                 </div>
                             }>
                         </Route>
                         <section style={styles.bgCanvas}>
-                            <Particles
+                            {/* <Particles
                                 params={particlesBGParams}
                                 style={{
-                                    margin: "auto",
                                     position: "fixed"
-                                    //  background: "rgba(255, 255, 255, 0)"
                                 }}
-                            />
+                            /> */}
                             <ProtectedRoute path="/" component={App} />
                         </section>
 
@@ -113,10 +115,15 @@ const styles = {
         margin: "auto",
     },
     bgCanvas: {
+        // background: 'red',
         background: "linear-gradient(180deg, rgba(0,15,36,1) 0%, rgba(9,54,121,1) 90%, rgba(16,40,172,1) 100%)",
         minHeight: "100vh",
-        height: "100%",
-        width: "100%",
+        backgroundAttachment: "fixed",
+
+
+        // height: "100%",
+        // width: "100%",
+        // overflow: "hidden",
     },
 }
 

@@ -5,7 +5,6 @@ import { TextField } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles';
 import AxiosCalls from '../Classes/AxiosCalls'
 import { Redirect } from 'react-router-dom'
-// import background from '../../Files/images/image1.jpg'
 
 
 class Login extends Component {
@@ -53,7 +52,9 @@ class Login extends Component {
             return <Redirect to="/" />
         } else
             return (
-                <section style={styles.section}>
+                <section
+                // style={styles.section}
+                >
                     {children}
                     <div className="loginbox">
                         <img src={avatar} alt="notFound" className="avatar"></img>
@@ -133,22 +134,7 @@ const styles = {
     inputProps: {
         color: '#FFF',
     },
-    // section: {
-    //     backgroundImage: `url(${background})`,
-    //     backgroundRepeat: "no-repeat",
-    //     backgroundSize: "auto",
-    //     height: "100vh",
-    //     width: "100vw",
-    //     backgroundPosition: "center",
-    //     fontFamily: "sans-serif"
-    // },
-    section: {
-        // background: "rgb(0,15,36)",
-        background: "linear-gradient(180deg, rgba(0,15,36,1) 0%, rgba(9,54,121,1) 90%, rgba(16,40,172,1) 100%)",
-        minHeight: "100vh",
-        height: "100%",
-        width: "100%",
-    }
+
 }
 
 export default withStyles(stylesInputs)(Login);

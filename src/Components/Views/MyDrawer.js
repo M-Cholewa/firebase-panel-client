@@ -118,11 +118,8 @@ class MyDrawer extends Component {
                 </nav>
 
                 <main className={classes.content}>
-
                     <div className={classes.toolbar} />
-
                     {children}
-
                 </main>
             </div>
         );
