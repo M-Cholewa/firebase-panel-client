@@ -74,15 +74,17 @@ class MyForm extends Component {
                         responseObtained: true,
                         success: res.result,
                         loading: false,
-                        buttonMessage: res.response
+                        buttonMessage: res.response,
+                    }, () => {
+                        let cbMessage = res.result ? "Zapisz" : "Sprawdź dane i spróbuj ponownie"
+                        setTimeout(() => this.setState(
+                            {
+                                responseObtained: false,
+                                czyWymagane: false,
+                                buttonMessage: cbMessage,
+                            }
+                        ), 5000)
                     })
-                    let cbMessage = res.result ? "Zapisz" : "Sprawdź dane i spróbuj ponownie"
-                    setTimeout(() => this.setState(
-                        {
-                            responseObtained: false,
-                            buttonMessage: cbMessage
-                        }
-                    ), 5000)
                 })
         }
     }
@@ -104,7 +106,7 @@ class MyForm extends Component {
 
         if (this.props.taskID)
             formData.append('key', this.props.taskID)
-        formData.append("czyWymagane", this.state.czyWymagane)
+        // formData.append("czyWymagane", this.state.czyWymagane)
         formData.append("dobreOdpowiedzi", JSON.stringify(this.state.dobreOdpowiedzi))
         formData.append('image', file ? file : this.props.formValues.urlZdjeciaDoZadania);
 
@@ -114,26 +116,28 @@ class MyForm extends Component {
                 formData.append(node.name, node.value)
             })
         }
-        // for (var pair of formData.entries()) {
-        //     console.log(pair[0] + ', ' + pair[1]);
-        // }
+        for (var pair of formData.entries()) {
+            console.log(pair[0] + ', ' + pair[1]);
+        }
         return formData
     }
 
     componentDidMount() {
         this.setState({
-            labelWidth: ReactDOM.findDOMNode(this.InputLabelRef).offsetWidth
+            labelWidth: ReactDOM.findDOMNode(this.InputLabelRef).offsetWidth,
+            // czyWymagane: this.props.formValues.czyWymagane
         });
     }
 
     addNode = node => {
+        if (node == null) return
         let nodes = this.state.nodes
         nodes[node.name] = node
         this.setState({ nodes })
     }
 
     render() {
-        const { loading, nodes } = this.state
+        const { loading, nodes, czyWymagane } = this.state
         const { formValues, id, isNew, classes } = this.props
         //if it is not empty
         if (nodes !== {}) {
@@ -142,7 +146,6 @@ class MyForm extends Component {
                     node.value = formValues[node.name]
             })
         }
-
         return (
             <ExpansionPanel
                 className={classes.expPanel}
@@ -195,15 +198,28 @@ class MyForm extends Component {
                     </InputLabel>
                             <Select
                                 required
+                                native
                                 name="czyWymagane"
                                 labelId="czyWymagane"
-                                onChange={event => this.setState({ czyWymagane: event.target.value })}
+                                // onChange={event => this.setState({ czyWymagane: event.target.value })}
                                 labelWidth={this.state.labelWidth}
-                                defaultValue={this.state.czyWymagane}
-                            // inputRef={this.addNode}
+                                // value={this.state.czyWymagane}
+                                // defaultValue={formValues.czyWymagane}
+                                // inputRef={(ref) => {
+                                //     if (ref) {
+                                //         // console.log(ref)
+                                //         this.addNode(ref)
+                                //         // ref.node.value = false
+                                //     }
+                                // }}
+                                inputRef={this.addNode}
+
                             >
-                                <MenuItem value={true}>Tak</MenuItem>
-                                <MenuItem value={false}>Nie</MenuItem>
+                                {/* <MenuItem value="" /> */}
+                                <option value={true}>Tak</option>
+                                <option value={false}>Nie</option>
+                                {/* <MenuItem value={true}>Tak</MenuItem>
+                                <MenuItem value={false}>Nie</MenuItem> */}
                             </Select>
                         </FormControl>
 
